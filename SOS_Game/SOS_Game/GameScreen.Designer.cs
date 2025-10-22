@@ -45,7 +45,6 @@ namespace SOS_Game
             this.bluePlayer = new System.Windows.Forms.GroupBox();
             this.redPlayer = new System.Windows.Forms.GroupBox();
             this.sosGroup = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.turnLabel = new System.Windows.Forms.Label();
             this.bluePlayer.SuspendLayout();
             this.redPlayer.SuspendLayout();
@@ -74,6 +73,7 @@ namespace SOS_Game
             this.blueS.Text = "S";
             this.blueS.UseVisualStyleBackColor = true;
             this.blueS.CheckedChanged += new System.EventHandler(this.BlueS_CheckedChanged);
+            blueSelected = blueS;
             // 
             // blueO
             // 
@@ -99,6 +99,7 @@ namespace SOS_Game
             this.redS.Text = "S";
             this.redS.UseVisualStyleBackColor = true;
             this.redS.CheckedChanged += new System.EventHandler(this.RedS_CheckedChanged);
+            redSelected = redS;
             // 
             // redO
             // 
@@ -206,15 +207,6 @@ namespace SOS_Game
             this.sosGroup.TabStop = false;
             this.sosGroup.Text = "SOS";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(0, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 20;
-            this.label1.Text = "label1";
-            // 
             // turnLabel
             // 
             this.turnLabel.AutoSize = true;
@@ -232,7 +224,6 @@ namespace SOS_Game
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(687, 418);
             this.Controls.Add(this.turnLabel);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.sosGroup);
             this.Controls.Add(this.redPlayer);
             this.Controls.Add(this.bluePlayer);
@@ -266,6 +257,10 @@ namespace SOS_Game
                 columnRowCount = int.Parse(gridSizeNum.Text);
             }
             catch 
+            {
+                columnRowCount = defaultSize;
+            }
+            if (columnRowCount < 3 || columnRowCount > 10)
             {
                 columnRowCount = defaultSize;
             }
@@ -329,7 +324,6 @@ namespace SOS_Game
         private GroupBox bluePlayer;
         private GroupBox redPlayer;
         private GroupBox sosGroup;
-        private Label label1;
         private Label turnLabel;
     }
 }
