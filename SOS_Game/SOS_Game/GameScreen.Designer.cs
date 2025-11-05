@@ -119,6 +119,7 @@ namespace SOS_Game
             this.gameGrid.Name = "gameGrid";
             this.gameGrid.Size = new System.Drawing.Size(200, 100);
             this.gameGrid.TabIndex = 13;
+            this.gameGrid.Paint += new System.Windows.Forms.PaintEventHandler(this.gameGrid_Paint_1);
             // 
             // gridSizeNum
             // 
@@ -222,13 +223,13 @@ namespace SOS_Game
             // WinnerLabel
             // 
             this.WinnerLabel.AutoSize = true;
-            this.WinnerLabel.Visible = false;
             this.WinnerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.WinnerLabel.Location = new System.Drawing.Point(178, 153);
             this.WinnerLabel.Name = "WinnerLabel";
             this.WinnerLabel.Size = new System.Drawing.Size(327, 73);
             this.WinnerLabel.TabIndex = 22;
             this.WinnerLabel.Text = "WINNER!!";
+            this.WinnerLabel.Visible = false;
             // 
             // GameScreen
             // 
@@ -320,7 +321,7 @@ namespace SOS_Game
             this.gameGrid.Size = new System.Drawing.Size(318,318);
             this.gameGrid.TabIndex = 9;
             this.gameGrid.Click += new System.EventHandler(this.GameGrid_Click);
-            this.gameGrid.Paint += new System.Windows.Forms.PaintEventHandler(this.GameGrid_Paint);
+            this.gameGrid.CellPaint += new TableLayoutCellPaintEventHandler(this.GameGrid_CellPaint);
         }
 
         #endregion

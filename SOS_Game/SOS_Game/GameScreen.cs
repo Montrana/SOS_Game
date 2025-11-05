@@ -58,12 +58,12 @@ namespace SOS_Game
                     int addScore = 0;
                     if (cell.Text == "S")
                     {
-                        addScore = Program.PlaceS_CheckSOS(gameGrid, cellIndex);
+                        addScore = Program.PlaceS_CheckSOS(gameGrid, cellIndex, Color.Red);
                         
                     }
                     else if (cell.Text == "O")
                     {
-                        addScore = Program.PlaceO_CheckSOS(gameGrid, cellIndex);
+                        addScore = Program.PlaceO_CheckSOS(gameGrid, cellIndex, Color.Red);
                     }
                     if (addScore > 0)
                     {
@@ -94,11 +94,11 @@ namespace SOS_Game
                     int addScore = 0;
                     if (cell.Text == "S")
                     {
-                        addScore = Program.PlaceS_CheckSOS(gameGrid, cellIndex);
+                        addScore = Program.PlaceS_CheckSOS(gameGrid, cellIndex, Color.Blue);
                     }
                     else if (cell.Text == "O")
                     {
-                        addScore = Program.PlaceO_CheckSOS(gameGrid, cellIndex);
+                        addScore = Program.PlaceO_CheckSOS(gameGrid, cellIndex, Color.Blue);
                     }
                     if (addScore > 0)
                     {
@@ -135,7 +135,7 @@ namespace SOS_Game
             }
         }
 
-        private void GameGrid_Paint(object sender, PaintEventArgs e)
+        private void GameGrid_CellPaint(object sender, PaintEventArgs e)
         {
 
         }
@@ -287,6 +287,66 @@ namespace SOS_Game
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="x1"></param>
+        /// <param name="x2"></param>
+        /// <param name="x3"></param>
+        /// <param name="y1"></param>
+        /// <param name="y2"></param>
+        /// <param name="y3"></param>
+        /// <param name="color"></param>
+        public void DrawLineSOS(Graphics g, TableLayoutPanel gameGrid,
+            int x1, int x2, int x3,
+            int y1, int y2, int y3, Color color)
+        {
+            var offset = gameGrid.Location;
+            Point point1 = GetCellCenterPoint(gameGrid, x1, y1);
+            Point point2 = GetCellCenterPoint(gameGrid, x2, y2);
+            Point point3 = GetCellCenterPoint(gameGrid, x3, y3);
+
+            point1.X += offset.X;
+            point1.Y += offset.Y;
+            point2.X += offset.X;
+            point2.Y += offset.Y;
+            point3.X += offset.X;
+            point3.Y += offset.Y;
+
+            using (Pen pen = new Pen(color, 16))
+            {
+                g.DrawLine(pen, point1, point2);
+                g.DrawLine(pen, point2, point3);
+            }
+        }
+
+        Point GetCellCenterPoint(TableLayoutPanel gameGrid, int column, int row)
+        {
+            int[] widths = gameGrid.GetColumnWidths();
+            int[] heights = gameGrid.GetRowHeights();
+
+            int cellX = 0;
+            for (int i = 0; i < column; i++)
+            {
+                cellX += widths[i];
+            }
+
+            int cellY = 0;
+            for (int i = 0; i < row; i++)
+            {
+                cellY += heights[i];
+            }
+
+            int cellWidth = widths[column];
+            int cellHeight = heights[row];
+
+            int centerX = cellX + (cellWidth / 2);
+            int centerY = cellY + (cellHeight / 2);
+
+            return new Point(centerX, centerY);
+        }
+
+        /// <summary>
         /// Source: https://stackoverflow.com/questions/15449504/how-do-i-determine-the-cell-being-clicked-on-in-a-tablelayoutpanel
         /// </summary>
         /// <param name="gameGrid"></param>
@@ -347,6 +407,11 @@ namespace SOS_Game
                 }
             }
             return true;
+        }
+
+        private void gameGrid_Paint_1(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
