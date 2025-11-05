@@ -115,7 +115,7 @@ namespace SOS_Game
                     }
                 }
             }
-            if (Program.gameType == Program.GameType.complex && CheckGridFull())
+            if (CheckGridFull())
             {
                 if (Program.red.Score > Program.blue.Score)
                 {
