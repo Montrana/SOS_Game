@@ -46,6 +46,7 @@ namespace SOS_Game
             this.redPlayer = new System.Windows.Forms.GroupBox();
             this.sosGroup = new System.Windows.Forms.GroupBox();
             this.turnLabel = new System.Windows.Forms.Label();
+            this.WinnerLabel = new System.Windows.Forms.Label();
             this.bluePlayer.SuspendLayout();
             this.redPlayer.SuspendLayout();
             this.sosGroup.SuspendLayout();
@@ -73,7 +74,6 @@ namespace SOS_Game
             this.blueS.Text = "S";
             this.blueS.UseVisualStyleBackColor = true;
             this.blueS.CheckedChanged += new System.EventHandler(this.BlueS_CheckedChanged);
-            blueSelected = blueS;
             // 
             // blueO
             // 
@@ -99,7 +99,6 @@ namespace SOS_Game
             this.redS.Text = "S";
             this.redS.UseVisualStyleBackColor = true;
             this.redS.CheckedChanged += new System.EventHandler(this.RedS_CheckedChanged);
-            redSelected = redS;
             // 
             // redO
             // 
@@ -162,6 +161,7 @@ namespace SOS_Game
             this.simpleButton.TabStop = true;
             this.simpleButton.Text = "Simple Game";
             this.simpleButton.UseVisualStyleBackColor = true;
+            this.simpleButton.CheckedChanged += new System.EventHandler(this.SimpleButton_CheckedChanged);
             // 
             // complexButton
             // 
@@ -173,6 +173,7 @@ namespace SOS_Game
             this.complexButton.TabStop = true;
             this.complexButton.Text = "Complex Game";
             this.complexButton.UseVisualStyleBackColor = true;
+            this.complexButton.CheckedChanged += new System.EventHandler(this.ComplexButton_CheckedChanged);
             // 
             // bluePlayer
             // 
@@ -218,11 +219,23 @@ namespace SOS_Game
             this.turnLabel.Text = "Who\'s Turn?";
             this.turnLabel.Click += new System.EventHandler(this.turnLabel_Click);
             // 
+            // WinnerLabel
+            // 
+            this.WinnerLabel.AutoSize = true;
+            this.WinnerLabel.Visible = false;
+            this.WinnerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.WinnerLabel.Location = new System.Drawing.Point(178, 153);
+            this.WinnerLabel.Name = "WinnerLabel";
+            this.WinnerLabel.Size = new System.Drawing.Size(327, 73);
+            this.WinnerLabel.TabIndex = 22;
+            this.WinnerLabel.Text = "WINNER!!";
+            // 
             // GameScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(687, 418);
+            this.Controls.Add(this.WinnerLabel);
             this.Controls.Add(this.turnLabel);
             this.Controls.Add(this.sosGroup);
             this.Controls.Add(this.redPlayer);
@@ -302,6 +315,7 @@ namespace SOS_Game
                     gameGrid.Controls.Add(label, col, row);
                 }
             }
+            Program.gridSize = columnRowCount;
 
             this.gameGrid.Size = new System.Drawing.Size(318,318);
             this.gameGrid.TabIndex = 9;
@@ -325,6 +339,7 @@ namespace SOS_Game
         private GroupBox redPlayer;
         private GroupBox sosGroup;
         private Label turnLabel;
+        private Label WinnerLabel;
     }
 }
 
