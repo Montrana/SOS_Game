@@ -12,10 +12,20 @@ namespace SOS_Game
     internal class ComputerPlayer : Player
     {
         
+        /// <summary>
+        /// Computer player initialization
+        /// </summary>
+        /// <param name="color">Player color</param>
         public ComputerPlayer(Color color) : base(color)
         {
             IsHuman = false;
         }
+
+        /// <summary>
+        /// Computer move selection logic
+        /// </summary>
+        /// <param name="gameGrid"></param>
+        /// <returns>If the computer found a move that creates an SOS</returns>
         public bool ComputerMoveSelection(TableLayoutPanel gameGrid)
         {
             Random rand = new Random();
@@ -60,6 +70,11 @@ namespace SOS_Game
             return false;
         }
 
+        /// <summary>
+        /// Finds an empty cell if the computer was unsuccesfull with finding a move that creates an SOS
+        /// </summary>
+        /// <param name="gameGrid"></param>
+        /// <returns>The Control for the cell that the computer found</returns>
         public Control FindEmptyCell (TableLayoutPanel gameGrid)
         {
             int gridSize = gameGrid.RowCount;
@@ -73,6 +88,11 @@ namespace SOS_Game
             while (cell == null || cell.Text != "");
             return cell;
         }
+        /// <summary>
+        /// Updates the cell to reflect the computer's move
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <param name="moveSelection"></param>
         public void MakeMove(Control cell, string moveSelection)
         {
             if (moveSelection != null)

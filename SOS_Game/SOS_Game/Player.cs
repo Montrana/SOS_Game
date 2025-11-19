@@ -46,7 +46,12 @@ namespace SOS_Game
             }
         }
 
-
+        /// <summary>
+        /// Checks if an SOS can be created from the given Cell index by placing an S.
+        /// </summary>
+        /// <param name="gameGrid"></param>
+        /// <param name="cellIndex"></param>
+        /// <returns></returns>
         public int PlaceS_CheckSOS(TableLayoutPanel gameGrid, GameScreen.CellIndex cellIndex)
         {
             int SOSCreations = 0;
@@ -174,6 +179,12 @@ namespace SOS_Game
             }
             return SOSCreations;
         }
+        /// <summary>
+        /// Checks if an SOS can be created from the given Cell index by placing an O.
+        /// </summary>
+        /// <param name="gameGrid"></param>
+        /// <param name="cellIndex"></param>
+        /// <returns></returns>
         public int PlaceO_CheckSOS(TableLayoutPanel gameGrid, GameScreen.CellIndex cellIndex)
         {
             int SOSCreations = 0;

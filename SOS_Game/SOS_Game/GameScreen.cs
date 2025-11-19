@@ -36,6 +36,11 @@ namespace SOS_Game
             timer.Tick += Timer_Tick;
         }
 
+        /// <summary>
+        /// Continuous timer loop so that the AI continues making moves.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Timer_Tick(object sender, EventArgs e)
         {
             foreach (Player player in Program.players)
@@ -138,6 +143,11 @@ namespace SOS_Game
 
         }
         
+        /// <summary>
+        /// Activates when the start button is clicked, starts the game process.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StartButton_Click(object sender, EventArgs e)
         {
             if (blueS.Checked)
@@ -180,11 +190,11 @@ namespace SOS_Game
 
             if (simpleButton.Checked)
             {
-                Program.game = new Game(gridSize);
+                Program.game = new Game();
             }
             else
             {
-                Program.game = new Game(gridSize, Game.GameType.complex);
+                Program.game = new Game(Game.GameType.complex);
             }
             blueS.Text = "S";
             blueO.Text = "O";
@@ -206,7 +216,6 @@ namespace SOS_Game
         }
 
         /// <summary>
-        /// 
         /// https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.radiobutton?view=windowsdesktop-9.0&redirectedfrom=MSDN
         /// </summary>
         /// <param name="sender"></param>
@@ -378,6 +387,11 @@ namespace SOS_Game
             turnLabel.Text = player.PlayerName + "'s Turn";
             turnLabel.ForeColor = player.PlayerColor;
         }
+
+        /// <summary>
+        /// Checks if the grid is full
+        /// </summary>
+        /// <returns></returns>
         private bool CheckGridFull()
         {
             for (int x = 0; x < gameGrid.RowCount; x++)

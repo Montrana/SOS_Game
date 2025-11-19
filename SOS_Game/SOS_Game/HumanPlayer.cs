@@ -20,6 +20,13 @@ namespace SOS_Game
             OButton = o;
         }
 
+        /// <summary>
+        /// Makes a move based on where the player clicks on the board
+        /// </summary>
+        /// <param name="cell">Cell to Adjust</param>
+        /// <param name="gameGrid">The grid the cell is on</param>
+        /// <param name="cellIndex">Index of the cell</param>
+        /// <returns>true if an SOS was created</returns>
         public bool HumanMoveSelection(Control cell,
             TableLayoutPanel gameGrid, CellIndex cellIndex)
         {

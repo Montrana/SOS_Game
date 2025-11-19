@@ -14,18 +14,15 @@ namespace SOS_Game
             complex
         }
         public GameType Game_Type { get; private set; }
-        public int GridSize { get; private set; }
 
-        public Game(int gridSize, GameType gameType)
+        public Game(GameType gameType)
         {
-            GridSize = gridSize;
             Game_Type = gameType;
         }
 
-        public Game(int gridSize)
+        public Game()
         {
             Game_Type = GameType.simple;
-            GridSize = gridSize;
         }
     }
 }
