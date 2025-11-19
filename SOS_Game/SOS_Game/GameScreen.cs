@@ -67,31 +67,15 @@ namespace SOS_Game
                         else
                         {
                             UpdateTurn();
-                            break;
                         }
                     }
+                    break;
                 }
-                if (CheckGridFull())
-                {
-                    if (Program.players[0].Score > Program.players[1].Score)
-                    {
-                        WinnerLabel.Visible = true;
-                        WinnerLabel.ForeColor = Program.players[0].PlayerColor;
-                    }
-                    else if (Program.players[0].Score < Program.players[1].Score)
-                    {
-                        WinnerLabel.Visible = true;
-                        WinnerLabel.ForeColor = Program.players[1].PlayerColor;
-                    }
-                    else
-                    {
-                        WinnerLabel.Visible = true;
-                        WinnerLabel.Text = "Draw";
-                    }
-                    timer.Stop();
-                }
+                checkGridFull();
             }
         }
+
+        
 
         /// <summary>
         /// Sets the text of the cell that gets clicked to S or O, with the color of the participant's turn.
@@ -392,7 +376,7 @@ namespace SOS_Game
         /// Checks if the grid is full
         /// </summary>
         /// <returns></returns>
-        private bool CheckGridFull()
+        private bool GridFull()
         {
             for (int x = 0; x < gameGrid.RowCount; x++)
             {
@@ -406,6 +390,30 @@ namespace SOS_Game
                 }
             }
             return true;
+        }
+
+        private void checkGridFull()
+        {
+
+            if (GridFull())
+            {
+                if (Program.players[0].Score > Program.players[1].Score)
+                {
+                    WinnerLabel.Visible = true;
+                    WinnerLabel.ForeColor = Program.players[0].PlayerColor;
+                }
+                else if (Program.players[0].Score < Program.players[1].Score)
+                {
+                    WinnerLabel.Visible = true;
+                    WinnerLabel.ForeColor = Program.players[1].PlayerColor;
+                }
+                else
+                {
+                    WinnerLabel.Visible = true;
+                    WinnerLabel.Text = "Draw";
+                }
+                timer.Stop();
+            }
         }
 
         private void gameGrid_Paint_1(object sender, PaintEventArgs e)
