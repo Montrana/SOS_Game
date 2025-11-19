@@ -51,7 +51,7 @@ namespace SOS_Game
                     {
                         timer.Stop();
                     }
-                    if (!player.IsHuman)
+                    else if (!player.IsHuman)
                     {
                         Thread.Sleep(2500);
                         ComputerPlayer computer = (ComputerPlayer)player;
@@ -69,13 +69,11 @@ namespace SOS_Game
                             UpdateTurn();
                         }
                     }
+                    checkGridFull();
                     break;
                 }
-                checkGridFull();
             }
         }
-
-        
 
         /// <summary>
         /// Sets the text of the cell that gets clicked to S or O, with the color of the participant's turn.
@@ -113,6 +111,7 @@ namespace SOS_Game
                             break;
                         }
                     }
+                    checkGridFull();
                 }
             }
         }
