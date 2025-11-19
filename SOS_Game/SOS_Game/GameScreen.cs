@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
@@ -13,10 +15,8 @@ namespace SOS_Game
 {
     public partial class GameScreen : Form
     {
-        RadioButton redSelected;
-        RadioButton blueSelected;
-        RadioButton gameSelected;
         Random rand = new Random();
+        private System.Windows.Forms.Timer timer;
 
         public struct CellIndex
         {
@@ -26,6 +26,66 @@ namespace SOS_Game
         public GameScreen()
         {
             InitializeComponent();
+            InitializeTimer();
+        }
+
+        private void InitializeTimer()
+        {
+            timer = new System.Windows.Forms.Timer();
+            timer.Interval = 10;
+            timer.Tick += Timer_Tick;
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            foreach (Player player in Program.players)
+            {
+                if(player.IsTurn)
+                {
+                    if(player.IsHuman)
+                    {
+                        timer.Stop();
+                    }
+                    if (!player.IsHuman)
+                    {
+                        Thread.Sleep(2500);
+                        ComputerPlayer computer = (ComputerPlayer)player;
+                        if (computer.ComputerMoveSelection(gameGrid))
+                        {
+                            if(Program.game.Game_Type == Game.GameType.simple)
+                            {
+                                WinnerLabel.Visible = true;
+                                WinnerLabel.ForeColor = computer.PlayerColor;
+                                timer.Stop();
+                            }
+                        }
+                        else
+                        {
+                            UpdateTurn();
+                            break;
+                        }
+                    }
+                }
+                if (CheckGridFull())
+                {
+                    if (Program.players[0].Score > Program.players[1].Score)
+                    {
+                        WinnerLabel.Visible = true;
+                        WinnerLabel.ForeColor = Program.players[0].PlayerColor;
+                    }
+                    else if (Program.players[0].Score < Program.players[1].Score)
+                    {
+                        WinnerLabel.Visible = true;
+                        WinnerLabel.ForeColor = Program.players[1].PlayerColor;
+                    }
+                    else
+                    {
+                        WinnerLabel.Visible = true;
+                        WinnerLabel.Text = "Draw";
+                    }
+                    timer.Stop();
+                }
+            }
         }
 
         /// <summary>
@@ -43,94 +103,27 @@ namespace SOS_Game
 
             if(cell.Text == "") // Making sure the cell clicked is empty
             {
-                if (Program.red.IsTurn)
+                foreach (Player player in Program.players)
                 {
-                    if(redSelected != null)
+                    if (player.IsTurn & player.IsHuman)
                     {
-                        cell.Text = redSelected.Text;
-                        cell.ForeColor = Color.Red;
-                    }
-                    else
-                    {
-                        cell.Text = "S";
-                        cell.ForeColor = Color.Red;
-                    }
-                    int addScore = 0;
-                    if (cell.Text == "S")
-                    {
-                        addScore = Program.PlaceS_CheckSOS(gameGrid, cellIndex, Color.Red);
-                        
-                    }
-                    else if (cell.Text == "O")
-                    {
-                        addScore = Program.PlaceO_CheckSOS(gameGrid, cellIndex, Color.Red);
-                    }
-                    if (addScore > 0)
-                    {
-                        Program.red.AddScore(addScore);
-                        if (Program.gameType == Program.GameType.simple)
+                        HumanPlayer human = (HumanPlayer)player;
+                        if (human.HumanMoveSelection(cell, gameGrid, cellIndex))
                         {
-                            WinnerLabel.Visible = true;
-                            WinnerLabel.ForeColor = Color.Red;
+                            if(Program.game.Game_Type == Game.GameType.simple)
+                            {
+                                WinnerLabel.Visible = true;
+                                WinnerLabel.ForeColor = human.PlayerColor;
+                                timer.Stop();
+                            }
+                        }
+                        else
+                        {
+                            UpdateTurn();
+                            timer.Start();
+                            break;
                         }
                     }
-                    else
-                    {
-                        UpdateTurn();
-                    }
-                }
-                else if (Program.blue.IsTurn)
-                {
-                    if (blueSelected != null)
-                    {
-                        cell.Text = blueSelected.Text;
-                        cell.ForeColor = Color.Blue;
-                    }
-                    else
-                    {
-                        cell.Text = "S";
-                        cell.ForeColor = Color.Blue;
-                    }
-                    int addScore = 0;
-                    if (cell.Text == "S")
-                    {
-                        addScore = Program.PlaceS_CheckSOS(gameGrid, cellIndex, Color.Blue);
-                    }
-                    else if (cell.Text == "O")
-                    {
-                        addScore = Program.PlaceO_CheckSOS(gameGrid, cellIndex, Color.Blue);
-                    }
-                    if (addScore > 0)
-                    {
-                        Program.blue.AddScore(addScore);
-                        if (Program.gameType == Program.GameType.simple)
-                        {
-                            WinnerLabel.Visible = true;
-                            WinnerLabel.ForeColor = Color.Blue;
-                        }
-                    }
-                    else
-                    {
-                        UpdateTurn();
-                    }
-                }
-            }
-            if (CheckGridFull())
-            {
-                if (Program.red.Score > Program.blue.Score)
-                {
-                    WinnerLabel.Visible = true;
-                    WinnerLabel.ForeColor = Color.Red;
-                }
-                else if (Program.red.Score < Program.blue.Score)
-                {
-                    WinnerLabel.Visible = true;
-                    WinnerLabel.ForeColor = Color.Blue;
-                }
-                else
-                {
-                    WinnerLabel.Visible = true;
-                    WinnerLabel.Text = "Draw";
                 }
             }
         }
@@ -147,31 +140,59 @@ namespace SOS_Game
         
         private void StartButton_Click(object sender, EventArgs e)
         {
-            if (rand.Next(1) == 0)
+            if (blueS.Checked)
             {
-                Program.red.UpdateTurn();
+                HumanPlayer blueHuman = new HumanPlayer(Color.Blue, blueS, blueO);
+                Program.players[0] = blueHuman;
+            }
+            else if (blueO.Checked)
+            {
+                ComputerPlayer blueComputer = new ComputerPlayer(Color.Blue);
+                Program.players[0] = blueComputer;
+            }
+            if (redS.Checked)
+            {
+                HumanPlayer redHuman = new HumanPlayer(Color.Red, redS, redO);
+                Program.players[1] = redHuman;
+                
+            }
+            else if (redO.Checked)
+            {
+                ComputerPlayer redComputer = new ComputerPlayer(Color.Red);
+                Program.players[1] = redComputer;
+            }
+            Program.players[rand.Next(2)].UpdateTurn();
+
+            const int defaultSize = 3;
+            int gridSize;
+            try
+            {
+                gridSize = int.Parse(gridSizeNum.Text);
+            }
+            catch
+            {
+                gridSize = defaultSize;
+            }
+            if (gridSize < 3 || gridSize > 10)
+            {
+                gridSize = defaultSize;
+            }
+
+            if (simpleButton.Checked)
+            {
+                Program.game = new Game(gridSize);
             }
             else
             {
-                Program.blue.UpdateTurn();
+                Program.game = new Game(gridSize, Game.GameType.complex);
             }
-            if (gameSelected != null)
-            {
-                if (gameSelected.Text == "Simple Game")
-                {
-                    Program.gameType = Program.GameType.simple;
-                }
-                else
-                {
-                    Program.gameType = Program.GameType.complex;
-                }
-            }
-            else
-            {
-                Program.gameType = Program.GameType.simple;
-            }
-            CreateGrid();
+            blueS.Text = "S";
+            blueO.Text = "O";
+            redS.Text = "S";
+            redO.Text = "O";
+            CreateGrid(gridSize);
             UpdateTurn();
+            timer.Start();
         }
 
         private void GridSizeLabel_Click(object sender, EventArgs e)
@@ -199,15 +220,6 @@ namespace SOS_Game
                 MessageBox.Show("Sender is not a RadioButton");
                 return;
             }
-
-            // Ensure that the RadioButton.Checked property
-            // changed to true.
-            if (rb.Checked)
-            {
-                // Keep track of the selected RadioButton by saving a reference
-                // to it.
-                redSelected = rb;
-            }
         }
         private void RedO_CheckedChanged(object sender, EventArgs e)
         {
@@ -217,15 +229,6 @@ namespace SOS_Game
             {
                 MessageBox.Show("Sender is not a RadioButton");
                 return;
-            }
-
-            // Ensure that the RadioButton.Checked property
-            // changed to true.
-            if (rb.Checked)
-            {
-                // Keep track of the selected RadioButton by saving a reference
-                // to it.
-                redSelected = rb;
             }
         }
         private void BlueS_CheckedChanged(object sender, EventArgs e)
@@ -237,15 +240,6 @@ namespace SOS_Game
                 MessageBox.Show("Sender is not a RadioButton");
                 return;
             }
-
-            // Ensure that the RadioButton.Checked property
-            // changed to true.
-            if (rb.Checked)
-            {
-                // Keep track of the selected RadioButton by saving a reference
-                // to it.
-                blueSelected = rb;
-            }
         }
         private void BlueO_CheckedChanged(object sender, EventArgs e)
         {
@@ -256,25 +250,14 @@ namespace SOS_Game
                 MessageBox.Show("Sender is not a RadioButton");
                 return;
             }
-
-            // Ensure that the RadioButton.Checked property
-            // changed to true.
-            if (rb.Checked)
-            {
-                // Keep track of the selected RadioButton by saving a reference
-                // to it.
-                blueSelected = rb;
-            }
         }
         private void SimpleButton_CheckedChanged(object sender, EventArgs e)
         {
             RadioButton rb = sender as RadioButton;
-            gameSelected = rb;
         }
         private void ComplexButton_CheckedChanged(object sender, EventArgs e)
         {
             RadioButton rb = sender as RadioButton;
-            gameSelected = rb;
         }
 
         private void Label3_Click(object sender, EventArgs e)
@@ -380,24 +363,26 @@ namespace SOS_Game
         /// </summary>
         private void UpdateTurn()
         {
-            Program.red.UpdateTurn();
-            Program.blue.UpdateTurn();
-            if (Program.red.IsTurn)
+            foreach(Player player in Program.players)
             {
-                turnLabel.Text = "Red's Turn";
-                turnLabel.ForeColor = Color.Red;
+                player.UpdateTurn();
+                if (player.IsTurn)
+                {
+                    UpdateTurnLabel(player);
+                    
+                }
             }
-            else if(Program.blue.IsTurn)
-            {
-                turnLabel.Text = "Blue's Turn";
-                turnLabel.ForeColor = Color.Blue;
-            }
+        }
+        private void UpdateTurnLabel(Player player)
+        {
+            turnLabel.Text = player.PlayerName + "'s Turn";
+            turnLabel.ForeColor = player.PlayerColor;
         }
         private bool CheckGridFull()
         {
-            for (int x = 0; x < Program.gridSize; x++)
+            for (int x = 0; x < gameGrid.RowCount; x++)
             {
-                for (int y = 0; y < Program.gridSize; y++)
+                for (int y = 0; y < gameGrid.RowCount; y++)
                 {
                     Control cell = gameGrid.GetControlFromPosition(x, y);
                     if (cell.Text == "")

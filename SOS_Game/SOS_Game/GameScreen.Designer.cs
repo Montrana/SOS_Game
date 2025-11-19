@@ -68,10 +68,10 @@ namespace SOS_Game
             this.blueS.Checked = true;
             this.blueS.Location = new System.Drawing.Point(6, 19);
             this.blueS.Name = "blueS";
-            this.blueS.Size = new System.Drawing.Size(32, 17);
+            this.blueS.Size = new System.Drawing.Size(59, 17);
             this.blueS.TabIndex = 7;
             this.blueS.TabStop = true;
-            this.blueS.Text = "S";
+            this.blueS.Text = "Human";
             this.blueS.UseVisualStyleBackColor = true;
             this.blueS.CheckedChanged += new System.EventHandler(this.BlueS_CheckedChanged);
             // 
@@ -80,10 +80,10 @@ namespace SOS_Game
             this.blueO.AutoSize = true;
             this.blueO.Location = new System.Drawing.Point(6, 42);
             this.blueO.Name = "blueO";
-            this.blueO.Size = new System.Drawing.Size(33, 17);
+            this.blueO.Size = new System.Drawing.Size(70, 17);
             this.blueO.TabIndex = 1;
             this.blueO.TabStop = true;
-            this.blueO.Text = "O";
+            this.blueO.Text = "Computer";
             this.blueO.UseVisualStyleBackColor = true;
             this.blueO.CheckedChanged += new System.EventHandler(this.BlueO_CheckedChanged);
             // 
@@ -93,10 +93,10 @@ namespace SOS_Game
             this.redS.Checked = true;
             this.redS.Location = new System.Drawing.Point(6, 19);
             this.redS.Name = "redS";
-            this.redS.Size = new System.Drawing.Size(32, 17);
+            this.redS.Size = new System.Drawing.Size(59, 17);
             this.redS.TabIndex = 7;
             this.redS.TabStop = true;
-            this.redS.Text = "S";
+            this.redS.Text = "Human";
             this.redS.UseVisualStyleBackColor = true;
             this.redS.CheckedChanged += new System.EventHandler(this.RedS_CheckedChanged);
             // 
@@ -105,10 +105,10 @@ namespace SOS_Game
             this.redO.AutoSize = true;
             this.redO.Location = new System.Drawing.Point(6, 42);
             this.redO.Name = "redO";
-            this.redO.Size = new System.Drawing.Size(33, 17);
+            this.redO.Size = new System.Drawing.Size(70, 17);
             this.redO.TabIndex = 8;
             this.redO.TabStop = true;
-            this.redO.Text = "O";
+            this.redO.Text = "Computer";
             this.redO.UseVisualStyleBackColor = true;
             this.redO.CheckedChanged += new System.EventHandler(this.RedO_CheckedChanged);
             // 
@@ -262,29 +262,15 @@ namespace SOS_Game
         /// <summary>
         /// Generates the grid with the textboxes inside that will be updated when clicked
         /// </summary>
-        private void CreateGrid()
+        private void CreateGrid(int size)
         {
-            const int defaultSize = 3;
-            int columnRowCount;
-            try
-            {
-                columnRowCount = int.Parse(gridSizeNum.Text);
-            }
-            catch 
-            {
-                columnRowCount = defaultSize;
-            }
-            if (columnRowCount < 3 || columnRowCount > 10)
-            {
-                columnRowCount = defaultSize;
-            }
-            float sizePercent = (float) 100 / columnRowCount;
+            float sizePercent = (float) 100 / size;
             this.gameGrid.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.gameGrid.ColumnCount = columnRowCount;
+            this.gameGrid.ColumnCount = size;
             Console.WriteLine(sizePercent);
 
             //Sets the columns to be a percentage of the table size so that all columns are equal
-            for (int c = 0; c < columnRowCount; c++)
+            for (int c = 0; c < size; c++)
             {
                 this.gameGrid.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, sizePercent));
             }
@@ -293,10 +279,10 @@ namespace SOS_Game
             this.gameGrid.Margin = new System.Windows.Forms.Padding(0);
             this.gameGrid.Name = "gameGrid";
 
-            this.gameGrid.RowCount = columnRowCount;
+            this.gameGrid.RowCount = size;
 
             //Sets the rows to be a percentage of the table size so that all rows are equal
-            for (int r = 0; r < columnRowCount; r++) 
+            for (int r = 0; r < size; r++) 
             {
                 this.gameGrid.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, sizePercent));
             }
@@ -316,7 +302,6 @@ namespace SOS_Game
                     gameGrid.Controls.Add(label, col, row);
                 }
             }
-            Program.gridSize = columnRowCount;
 
             this.gameGrid.Size = new System.Drawing.Size(318,318);
             this.gameGrid.TabIndex = 9;
@@ -334,8 +319,8 @@ namespace SOS_Game
         private System.Windows.Forms.MaskedTextBox gridSizeNum;
         private System.Windows.Forms.Label sizeWarning;
         private System.Windows.Forms.Button startButton;
-        private RadioButton simpleButton;
-        private RadioButton complexButton;
+        private System.Windows.Forms.RadioButton simpleButton;
+        private System.Windows.Forms.RadioButton complexButton;
         private GroupBox bluePlayer;
         private GroupBox redPlayer;
         private GroupBox sosGroup;
