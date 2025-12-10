@@ -47,6 +47,8 @@ namespace SOS_Game
             this.sosGroup = new System.Windows.Forms.GroupBox();
             this.turnLabel = new System.Windows.Forms.Label();
             this.WinnerLabel = new System.Windows.Forms.Label();
+            this.RecordCheck = new System.Windows.Forms.CheckBox();
+            this.ReplayButton = new System.Windows.Forms.Button();
             this.bluePlayer.SuspendLayout();
             this.redPlayer.SuspendLayout();
             this.sosGroup.SuspendLayout();
@@ -143,7 +145,7 @@ namespace SOS_Game
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(296, 12);
+            this.startButton.Location = new System.Drawing.Point(171, 12);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(75, 23);
             this.startButton.TabIndex = 12;
@@ -231,11 +233,34 @@ namespace SOS_Game
             this.WinnerLabel.Text = "WINNER!!";
             this.WinnerLabel.Visible = false;
             // 
+            // RecordCheck
+            // 
+            this.RecordCheck.AutoSize = true;
+            this.RecordCheck.Location = new System.Drawing.Point(537, 54);
+            this.RecordCheck.Name = "RecordCheck";
+            this.RecordCheck.Size = new System.Drawing.Size(92, 17);
+            this.RecordCheck.TabIndex = 23;
+            this.RecordCheck.Text = "Record Game";
+            this.RecordCheck.UseVisualStyleBackColor = true;
+            this.RecordCheck.CheckedChanged += new System.EventHandler(this.RecordCheck_CheckedChanged);
+            // 
+            // ReplayButton
+            // 
+            this.ReplayButton.Location = new System.Drawing.Point(271, 12);
+            this.ReplayButton.Name = "ReplayButton";
+            this.ReplayButton.Size = new System.Drawing.Size(75, 23);
+            this.ReplayButton.TabIndex = 24;
+            this.ReplayButton.Text = "Replay";
+            this.ReplayButton.UseVisualStyleBackColor = true;
+            this.ReplayButton.Click += new System.EventHandler(this.ReplayButton_Click);
+            // 
             // GameScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(687, 418);
+            this.Controls.Add(this.ReplayButton);
+            this.Controls.Add(this.RecordCheck);
             this.Controls.Add(this.WinnerLabel);
             this.Controls.Add(this.turnLabel);
             this.Controls.Add(this.sosGroup);
@@ -326,6 +351,8 @@ namespace SOS_Game
         private GroupBox sosGroup;
         private Label turnLabel;
         private Label WinnerLabel;
+        private CheckBox RecordCheck;
+        private Button ReplayButton;
     }
 }
 

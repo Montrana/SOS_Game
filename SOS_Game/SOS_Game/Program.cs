@@ -13,6 +13,7 @@ namespace SOS_Game
     internal static class Program
     {
         public static Player[] players = new Player[2];
+        public static List<Move> recordedMoves = new List<Move>();
         public static Game game;
 
         /// <summary>

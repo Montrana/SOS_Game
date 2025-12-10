@@ -17,6 +17,7 @@ namespace SOS_Game
     {
         Random rand = new Random();
         private System.Windows.Forms.Timer timer;
+        private bool replaying = false;
 
         public struct CellIndex
         {
@@ -43,35 +44,56 @@ namespace SOS_Game
         /// <param name="e"></param>
         private void Timer_Tick(object sender, EventArgs e)
         {
-            foreach (Player player in Program.players)
+            if (!replaying)
             {
-                if(player.IsTurn)
+                foreach (Player player in Program.players)
                 {
-                    if(player.IsHuman)
+                    if(player.IsTurn)
                     {
-                        timer.Stop();
-                    }
-                    else if (!player.IsHuman)
-                    {
-                        Thread.Sleep(2500);
-                        ComputerPlayer computer = (ComputerPlayer)player;
-                        if (computer.ComputerMoveSelection(gameGrid))
+                        if(player.IsHuman)
                         {
-                            if(Program.game.Game_Type == Game.GameType.simple)
+                            timer.Stop();
+                        }
+                        else if (!player.IsHuman)
+                        {
+                            Thread.Sleep(2500);
+                            ComputerPlayer computer = (ComputerPlayer)player;
+                            if (computer.ComputerMoveSelection(gameGrid, out CellIndex cellIndex, out string letter))
                             {
-                                WinnerLabel.Visible = true;
-                                WinnerLabel.ForeColor = computer.PlayerColor;
-                                timer.Stop();
+                                if(Program.game.Game_Type == Game.GameType.simple)
+                                {
+                                    WinnerLabel.Visible = true;
+                                    WinnerLabel.ForeColor = computer.PlayerColor;
+                                    Program.game.DeclareWinner(player);
+                                    timer.Stop();
+                                }
                             }
-                        }
-                        else
-                        {
-                            UpdateTurn();
+                            else
+                            {
+                                UpdateTurn();
+                            }
+                            if (RecordCheck.Checked)
+                            {
+                                Move move = new Move(cellIndex, player, letter);
+                                Program.recordedMoves.Add(move);
+                            }
+                            checkGridFull();
+                            break;
                         }
                     }
-                    checkGridFull();
-                    break;
                 }
+            }
+            else
+            {
+                foreach (Move move in Program.recordedMoves)
+                {
+                    Control cell = gameGrid.GetControlFromPosition(move.Coordinate.x, move.Coordinate.y);
+                    cell.Text = move.Letter;
+                    cell.ForeColor = move.Player.PlayerColor;
+                    gameGrid.Refresh();
+                    Thread.Sleep(1000);
+                }
+                WinnerLabel.Visible = true;
             }
         }
 
@@ -95,23 +117,34 @@ namespace SOS_Game
                     if (player.IsTurn & player.IsHuman)
                     {
                         HumanPlayer human = (HumanPlayer)player;
-                        if (human.HumanMoveSelection(cell, gameGrid, cellIndex))
+                        if (human.HumanMoveSelection(cell, gameGrid, cellIndex, out string letter))
                         {
                             if(Program.game.Game_Type == Game.GameType.simple)
                             {
                                 WinnerLabel.Visible = true;
                                 WinnerLabel.ForeColor = human.PlayerColor;
+                                Program.game.DeclareWinner(player);
                                 timer.Stop();
+                            }
+                            if (RecordCheck.Checked)
+                            {
+                                Move move = new Move(cellIndex, player, letter);
+                                Program.recordedMoves.Add(move);
                             }
                         }
                         else
                         {
                             UpdateTurn();
                             timer.Start();
-                            break;
+                            if (RecordCheck.Checked)
+                            {
+                                Move move = new Move(cellIndex, player, letter);
+                                Program.recordedMoves.Add(move);
+                            }
                         }
+                        checkGridFull();
+                        break;
                     }
-                    checkGridFull();
                 }
             }
         }
@@ -400,11 +433,13 @@ namespace SOS_Game
                 {
                     WinnerLabel.Visible = true;
                     WinnerLabel.ForeColor = Program.players[0].PlayerColor;
+                    Program.game.DeclareWinner(Program.players[0]);
                 }
                 else if (Program.players[0].Score < Program.players[1].Score)
                 {
                     WinnerLabel.Visible = true;
                     WinnerLabel.ForeColor = Program.players[1].PlayerColor;
+                    Program.game.DeclareWinner(Program.players[1]);
                 }
                 else
                 {
@@ -418,6 +453,23 @@ namespace SOS_Game
         private void gameGrid_Paint_1(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void RecordCheck_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ReplayButton_Click(object sender, EventArgs e)
+        {
+            int gridSize = gameGrid.RowCount;
+            WinnerLabel.Visible = false;
+            gameGrid.Controls.Clear();
+            CreateGrid(gridSize);
+            gameGrid.Refresh();
+            replaying = true;
+            timer.Start();
+            
         }
     }
 }

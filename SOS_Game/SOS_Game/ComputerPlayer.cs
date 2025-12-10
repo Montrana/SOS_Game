@@ -11,7 +11,6 @@ namespace SOS_Game
 {
     internal class ComputerPlayer : Player
     {
-        
         /// <summary>
         /// Computer player initialization
         /// </summary>
@@ -26,16 +25,15 @@ namespace SOS_Game
         /// </summary>
         /// <param name="gameGrid"></param>
         /// <returns>If the computer found a move that creates an SOS</returns>
-        public bool ComputerMoveSelection(TableLayoutPanel gameGrid)
+        public bool ComputerMoveSelection(TableLayoutPanel gameGrid, out CellIndex cellIndex, out string text)
         {
             Random rand = new Random();
-            string text;
             int gridSize = gameGrid.RowCount;
             for (int i = 0; i < gridSize; i++)
             {
                 for (int j = 0; j < gridSize; j++)
                 {
-                    GameScreen.CellIndex cellIndex = new GameScreen.CellIndex
+                    cellIndex = new GameScreen.CellIndex
                     {
                         x = i,
                         y = j
@@ -46,13 +44,15 @@ namespace SOS_Game
                         if (0 < PlaceS_CheckSOS(gameGrid, cellIndex))
                         {
                             AddScore(PlaceS_CheckSOS(gameGrid, cellIndex));
-                            MakeMove(cell, "S");
+                            text = "S";
+                            MakeMove(cell, text);
                             return true;
                         }
                         else if (0 < PlaceS_CheckSOS(gameGrid, cellIndex))
                         {
                             AddScore(PlaceS_CheckSOS(gameGrid, cellIndex));
-                            MakeMove(cell, "O");
+                            text = "O";
+                            MakeMove(cell, text);
                             return true;
                         }
                     }
@@ -66,7 +66,7 @@ namespace SOS_Game
             {
                 text = "O";
             }
-            MakeMove(FindEmptyCell(gameGrid), text);
+            MakeMove(FindEmptyCell(gameGrid, out cellIndex), text);
             return false;
         }
 
@@ -75,15 +75,16 @@ namespace SOS_Game
         /// </summary>
         /// <param name="gameGrid"></param>
         /// <returns>The Control for the cell that the computer found</returns>
-        public Control FindEmptyCell (TableLayoutPanel gameGrid)
+        public Control FindEmptyCell (TableLayoutPanel gameGrid, out CellIndex index)
         {
             int gridSize = gameGrid.RowCount;
             Control cell;
             do
             {
                 Random rand = new Random();
-                cell = gameGrid.GetControlFromPosition(
-                    rand.Next(gridSize + 1), rand.Next(gridSize + 1));
+                index.x = rand.Next(gridSize + 1);
+                index.y = rand.Next(gridSize + 1);
+                cell = gameGrid.GetControlFromPosition(index.x, index.y);
             }
             while (cell == null || cell.Text != "");
             return cell;

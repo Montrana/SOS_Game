@@ -28,16 +28,19 @@ namespace SOS_Game
         /// <param name="cellIndex">Index of the cell</param>
         /// <returns>true if an SOS was created</returns>
         public bool HumanMoveSelection(Control cell,
-            TableLayoutPanel gameGrid, CellIndex cellIndex)
+            TableLayoutPanel gameGrid, CellIndex cellIndex, out string text)
         {
+            text = string.Empty;
             if (SButton.Checked)
             {
-                cell.Text = "S";
+                text = "S";
+                cell.Text = text;
                 cell.ForeColor = PlayerColor;
             }
             else if (OButton.Checked)
             {
-                cell.Text = "O";
+                text = "O";
+                cell.Text = text;
                 cell.ForeColor = PlayerColor;
             }
 
